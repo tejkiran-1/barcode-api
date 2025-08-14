@@ -8,20 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// Add Entity Framework - configured to work with both SQLite (dev) and SQL Server (production)
+// Add Entity Framework - configured to work with SQL Server/Azure SQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-if (connectionString!.Contains("Data Source=") && connectionString.Contains(".db"))
-{
-    // SQLite configuration for development
-    builder.Services.AddDbContext<ShipmentDeliveryContext>(options =>
-        options.UseSqlite(connectionString));
-}
-else
-{
-    // SQL Server configuration for production/Azure
-    builder.Services.AddDbContext<ShipmentDeliveryContext>(options =>
-        options.UseSqlServer(connectionString));
-}
+builder.Services.AddDbContext<ShipmentDeliveryContext>(options =>
+    options.UseSqlServer(connectionString));
 
 // Register repositories
 builder.Services.AddScoped<IGenericRepository<object>, GenericRepository<object>>();
@@ -35,6 +25,18 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Register services
 builder.Services.AddScoped<IShipmentDeliveryService, ShipmentDeliveryService>();
+
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200", "https://localhost:4200") // Angular default ports
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -57,6 +59,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Enable CORS
+app.UseCors("AllowAngularApp");
 
 app.UseHttpsRedirection();
 

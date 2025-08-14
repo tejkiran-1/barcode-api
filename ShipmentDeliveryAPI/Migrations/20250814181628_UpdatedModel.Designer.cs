@@ -12,8 +12,8 @@ using ShipmentDeliveryAPI.Data;
 namespace ShipmentDeliveryAPI.Migrations
 {
     [DbContext(typeof(ShipmentDeliveryContext))]
-    [Migration("20250814030210_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250814181628_UpdatedModel")]
+    partial class UpdatedModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

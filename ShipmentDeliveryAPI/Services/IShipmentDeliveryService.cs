@@ -8,5 +8,7 @@ namespace ShipmentDeliveryAPI.Services
         Task<ShipmentDeliveryResponseDto?> GetByShipmentNumberAsync(string shipmentNumber);
         Task<ShipmentDeliveryResponseDto?> GetByDeliveryNumberAsync(string deliveryNumber);
         Task<List<ShipmentDeliveryResponseDto>> GetAllShipmentsAsync();
+        Task<bool> UpdateShipmentAsync(string currentShipmentNumber, UpdateShipmentRequestDto request);
+        Task<bool> DeleteShipmentAsync(string shipmentNumber);
     }
 }

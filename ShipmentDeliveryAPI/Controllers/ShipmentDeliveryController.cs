@@ -5,7 +5,7 @@ using ShipmentDeliveryAPI.Services;
 namespace ShipmentDeliveryAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/shipmentdelivery")]
     public class ShipmentDeliveryController : ControllerBase
     {
         private readonly IShipmentDeliveryService _shipmentDeliveryService;
@@ -168,6 +168,127 @@ namespace ShipmentDeliveryAPI.Controllers
             {
                 _logger.LogError(ex, "Error retrieving all shipments");
                 return StatusCode(500, "Internal server error occurred while retrieving shipments.");
+            }
+        }
+
+        /// <summary>
+        /// Update a shipment's details including deliveries and items
+        /// </summary>
+        /// <param name="shipmentNumber">Current shipment number</param>
+        /// <param name="request">Update shipment data</param>
+        /// <returns>Success status</returns>
+        [HttpPut("shipment/{shipmentNumber}")]
+        public async Task<IActionResult> UpdateShipment(string shipmentNumber, [FromBody] UpdateShipmentRequestDto request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                if (string.IsNullOrWhiteSpace(shipmentNumber))
+                {
+                    return BadRequest("Shipment number is required.");
+                }
+
+                if (string.IsNullOrWhiteSpace(request.ShipmentNumber))
+                {
+                    return BadRequest("New shipment number is required.");
+                }
+
+                // Validate deliveries if provided
+                if (request.Deliveries != null && request.Deliveries.Any())
+                {
+                    foreach (var delivery in request.Deliveries)
+                    {
+                        if (string.IsNullOrWhiteSpace(delivery.DeliveryNumber))
+                        {
+                            return BadRequest("All delivery numbers are required.");
+                        }
+
+                        // Validate items based on delivery type
+                        if (delivery.DeliveryType == Models.DeliveryType.Container)
+                        {
+                            if (delivery.ContainerItems == null || !delivery.ContainerItems.Any())
+                            {
+                                return BadRequest($"Container items are required for container delivery type in delivery {delivery.DeliveryNumber}.");
+                            }
+
+                            var invalidContainerItems = delivery.ContainerItems.Where(ci =>
+                                string.IsNullOrWhiteSpace(ci.MaterialNumber) || string.IsNullOrWhiteSpace(ci.SerialNumber));
+
+                            if (invalidContainerItems.Any())
+                            {
+                                return BadRequest($"All container items must have material number and serial number in delivery {delivery.DeliveryNumber}.");
+                            }
+                        }
+                        else if (delivery.DeliveryType == Models.DeliveryType.Bulk)
+                        {
+                            if (delivery.BulkItems == null || !delivery.BulkItems.Any())
+                            {
+                                return BadRequest($"Bulk items are required for bulk delivery type in delivery {delivery.DeliveryNumber}.");
+                            }
+
+                            var invalidBulkItems = delivery.BulkItems.Where(bi =>
+                                string.IsNullOrWhiteSpace(bi.MaterialNumber) || string.IsNullOrWhiteSpace(bi.EvdSealNumber));
+
+                            if (invalidBulkItems.Any())
+                            {
+                                return BadRequest($"All bulk items must have material number and EVD seal number in delivery {delivery.DeliveryNumber}.");
+                            }
+                        }
+                    }
+                }
+
+                var result = await _shipmentDeliveryService.UpdateShipmentAsync(shipmentNumber, request);
+
+                if (result)
+                {
+                    return Ok(new { message = $"Shipment {shipmentNumber} updated successfully to {request.ShipmentNumber}" });
+                }
+                else
+                {
+                    return BadRequest($"Failed to update shipment {shipmentNumber}. Please check if the new shipment number already exists or if validation failed.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating shipment: {ShipmentNumber}", shipmentNumber);
+                return StatusCode(500, "Internal server error occurred while updating shipment.");
+            }
+        }
+
+        /// <summary>
+        /// Delete a shipment and all associated deliveries and items
+        /// </summary>
+        /// <param name="shipmentNumber">Shipment number to delete</param>
+        /// <returns>Success status</returns>
+        [HttpDelete("shipment/{shipmentNumber}")]
+        public async Task<IActionResult> DeleteShipment(string shipmentNumber)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(shipmentNumber))
+                {
+                    return BadRequest("Shipment number is required.");
+                }
+
+                var result = await _shipmentDeliveryService.DeleteShipmentAsync(shipmentNumber);
+
+                if (result)
+                {
+                    return Ok(new { message = $"Shipment {shipmentNumber} and all associated data deleted successfully" });
+                }
+                else
+                {
+                    return NotFound($"Shipment with number {shipmentNumber} not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting shipment: {ShipmentNumber}", shipmentNumber);
+                return StatusCode(500, "Internal server error occurred while deleting shipment.");
             }
         }
     }
