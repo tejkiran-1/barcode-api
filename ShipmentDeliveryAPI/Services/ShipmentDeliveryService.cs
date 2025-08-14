@@ -323,7 +323,7 @@ namespace ShipmentDeliveryAPI.Services
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
 
-                _logger.LogInformation("Successfully updated shipment {OldShipmentNumber} to {NewShipmentNumber}", 
+                _logger.LogInformation("Successfully updated shipment {OldShipmentNumber} to {NewShipmentNumber}",
                     currentShipmentNumber, request.ShipmentNumber);
 
                 return true;

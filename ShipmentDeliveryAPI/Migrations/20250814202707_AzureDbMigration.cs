@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ShipmentDeliveryAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdatedModel : Migration
+    public partial class AzureDbMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

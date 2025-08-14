@@ -12,15 +12,15 @@ using ShipmentDeliveryAPI.Data;
 namespace ShipmentDeliveryAPI.Migrations
 {
     [DbContext(typeof(ShipmentDeliveryContext))]
-    [Migration("20250814181628_UpdatedModel")]
-    partial class UpdatedModel
+    [Migration("20250814202707_AzureDbMigration")]
+    partial class AzureDbMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.8")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
