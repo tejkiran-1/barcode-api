@@ -1,0 +1,55 @@
+@ShipmentDeliveryAPI_HostAddress = http://localhost:5000
+
+### Create a Container Delivery
+POST {{ShipmentDeliveryAPI_HostAddress}}/api/shipmentdelivery
+Content-Type: application/json
+
+{
+  "shipmentNumber": "SH001",
+  "deliveryNumber": "DL001",
+  "deliveryType": 0,
+  "containerItems": [
+    {
+      "materialNumber": "MAT001",
+      "serialNumber": "SER001"
+    },
+    {
+      "materialNumber": "MAT002",
+      "serialNumber": "SER002"
+    }
+  ]
+}
+
+### Create a Bulk Delivery
+POST {{ShipmentDeliveryAPI_HostAddress}}/api/shipmentdelivery
+Content-Type: application/json
+
+{
+  "shipmentNumber": "SH001",
+  "deliveryNumber": "DL002",
+  "deliveryType": 1,
+  "bulkItems": [
+    {
+      "materialNumber": "MAT003",
+      "evdSealNumber": "EVD001"
+    },
+    {
+      "materialNumber": "MAT004",
+      "evdSealNumber": "EVD002"
+    }
+  ]
+}
+
+### Get Shipment by Shipment Number
+GET {{ShipmentDeliveryAPI_HostAddress}}/api/shipmentdelivery/shipment/SH001
+
+### Get Shipment by Delivery Number
+GET {{ShipmentDeliveryAPI_HostAddress}}/api/shipmentdelivery/delivery/DL001
+
+### Get All Shipments
+GET {{ShipmentDeliveryAPI_HostAddress}}/api/shipmentdeliveryentDeliveryAPI_HostAddress = http://localhost:5144
+
+GET {{ShipmentDeliveryAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
