@@ -22,6 +22,7 @@ namespace ShipmentDeliveryAPI.DTOs
     {
         public string MaterialNumber { get; set; } = string.Empty;
         public string SerialNumber { get; set; } = string.Empty;
+        public string ConnectionLabel { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
     }
 
@@ -29,6 +30,7 @@ namespace ShipmentDeliveryAPI.DTOs
     {
         public string MaterialNumber { get; set; } = string.Empty;
         public string EvdSealNumber { get; set; } = string.Empty;
+        public string ConnectionLabel { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
     }
 }

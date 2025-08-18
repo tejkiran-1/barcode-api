@@ -64,6 +64,7 @@ namespace ShipmentDeliveryAPI.Services
                     {
                         MaterialNumber = item.MaterialNumber,
                         SerialNumber = item.SerialNumber,
+                        ConnectionLabel = item.ConnectionLabel,
                         DeliveryId = delivery.DeliveryId,
                         CreatedAt = DateTime.UtcNow
                     }).ToList();
@@ -76,6 +77,7 @@ namespace ShipmentDeliveryAPI.Services
                     {
                         MaterialNumber = item.MaterialNumber,
                         EvdSealNumber = item.EvdSealNumber,
+                        ConnectionLabel = item.ConnectionLabel,
                         DeliveryId = delivery.DeliveryId,
                         CreatedAt = DateTime.UtcNow
                     }).ToList();
@@ -299,6 +301,7 @@ namespace ShipmentDeliveryAPI.Services
                             {
                                 MaterialNumber = item.MaterialNumber,
                                 SerialNumber = item.SerialNumber,
+                                ConnectionLabel = item.ConnectionLabel,
                                 DeliveryId = delivery.DeliveryId,
                                 CreatedAt = DateTime.UtcNow
                             }).ToList();
@@ -311,6 +314,7 @@ namespace ShipmentDeliveryAPI.Services
                             {
                                 MaterialNumber = item.MaterialNumber,
                                 EvdSealNumber = item.EvdSealNumber,
+                                ConnectionLabel = item.ConnectionLabel,
                                 DeliveryId = delivery.DeliveryId,
                                 CreatedAt = DateTime.UtcNow
                             }).ToList();
@@ -410,6 +414,7 @@ namespace ShipmentDeliveryAPI.Services
                         {
                             MaterialNumber = ci.MaterialNumber,
                             SerialNumber = ci.SerialNumber,
+                            ConnectionLabel = ci.ConnectionLabel,
                             CreatedAt = ci.CreatedAt
                         }).ToList()
                         : null,
@@ -418,6 +423,7 @@ namespace ShipmentDeliveryAPI.Services
                         {
                             MaterialNumber = bi.MaterialNumber,
                             EvdSealNumber = bi.EvdSealNumber,
+                            ConnectionLabel = bi.ConnectionLabel,
                             CreatedAt = bi.CreatedAt
                         }).ToList()
                         : null

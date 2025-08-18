@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShipmentDeliveryAPI.Data;
 
@@ -11,9 +12,11 @@ using ShipmentDeliveryAPI.Data;
 namespace ShipmentDeliveryAPI.Migrations
 {
     [DbContext(typeof(ShipmentDeliveryContext))]
-    partial class ShipmentDeliveryContextModelSnapshot : ModelSnapshot
+    [Migration("20250818142006_AddConnectionLabel")]
+    partial class AddConnectionLabel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

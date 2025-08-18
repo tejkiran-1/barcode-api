@@ -16,6 +16,9 @@ namespace ShipmentDeliveryAPI.Models
         [StringLength(50)]
         public string SerialNumber { get; set; } = string.Empty;
 
+        [StringLength(100)]
+        public string ConnectionLabel { get; set; } = string.Empty;
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
 

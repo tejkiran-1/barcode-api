@@ -62,6 +62,7 @@ namespace ShipmentDeliveryAPI.Data
                 entity.HasKey(e => e.ContainerItemId);
                 entity.Property(e => e.MaterialNumber).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.SerialNumber).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.ConnectionLabel).HasMaxLength(100);
                 entity.Property(e => e.CreatedAt).IsRequired();
                 entity.Property(e => e.DeliveryId).IsRequired();
 
@@ -77,6 +78,7 @@ namespace ShipmentDeliveryAPI.Data
                 entity.HasKey(e => e.BulkItemId);
                 entity.Property(e => e.MaterialNumber).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.EvdSealNumber).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.ConnectionLabel).HasMaxLength(100);
                 entity.Property(e => e.CreatedAt).IsRequired();
                 entity.Property(e => e.DeliveryId).IsRequired();
 
