@@ -144,27 +144,14 @@ namespace ShipmentDeliveryAPI.Services
             }
         }
 
-        public async Task<PaginatedResponseDto<ShipmentDeliveryResponseDto>> GetAllShipmentsAsync(int page = 1, int pageSize = 20)
+        public async Task<List<ShipmentDeliveryResponseDto>> GetAllShipmentsAsync()
         {
             try
             {
-                // Get total count for pagination
-                var totalRecords = await _unitOfWork.Shipments.CountAsync();
-                var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
-
-                // Get all shipments first
-                var allShipments = await _unitOfWork.Shipments.GetAllAsync();
-                
-                // Apply pagination
-                var pagedShipments = allShipments
-                    .OrderBy(s => s.CreatedAt)
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
-
+                var shipments = await _unitOfWork.Shipments.GetAllAsync();
                 var result = new List<ShipmentDeliveryResponseDto>();
 
-                foreach (var shipment in pagedShipments)
+                foreach (var shipment in shipments)
                 {
                     var shipmentWithDeliveries = await _unitOfWork.Shipments.GetShipmentWithDeliveriesAsync(shipment.ShipmentNumber);
                     if (shipmentWithDeliveries != null)
@@ -173,20 +160,11 @@ namespace ShipmentDeliveryAPI.Services
                     }
                 }
 
-                return new PaginatedResponseDto<ShipmentDeliveryResponseDto>
-                {
-                    Data = result,
-                    PageNumber = page,
-                    PageSize = pageSize,
-                    TotalRecords = totalRecords,
-                    TotalPages = totalPages,
-                    HasNextPage = page < totalPages,
-                    HasPreviousPage = page > 1
-                };
+                return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving all shipments with pagination");
+                _logger.LogError(ex, "Error retrieving all shipments");
                 throw;
             }
         }

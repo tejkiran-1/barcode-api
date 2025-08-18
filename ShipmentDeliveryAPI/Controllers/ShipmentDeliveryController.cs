@@ -153,28 +153,15 @@ namespace ShipmentDeliveryAPI.Controllers
         }
 
         /// <summary>
-        /// Get all shipments with pagination support
+        /// Get all shipments
         /// </summary>
-        /// <param name="page">Page number (default: 1)</param>
-        /// <param name="pageSize">Items per page (default: 20, max: 100)</param>
-        /// <returns>Paginated list of shipments with their deliveries</returns>
+        /// <returns>List of all shipments with their deliveries</returns>
         [HttpGet]
-        public async Task<IActionResult> GetAllShipments([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+        public async Task<IActionResult> GetAllShipments()
         {
             try
             {
-                // Validate pagination parameters
-                if (page < 1)
-                {
-                    return BadRequest("Page number must be greater than 0.");
-                }
-
-                if (pageSize < 1 || pageSize > 100)
-                {
-                    return BadRequest("Page size must be between 1 and 100.");
-                }
-
-                var result = await _shipmentDeliveryService.GetAllShipmentsAsync(page, pageSize);
+                var result = await _shipmentDeliveryService.GetAllShipmentsAsync();
                 return Ok(result);
             }
             catch (Exception ex)
