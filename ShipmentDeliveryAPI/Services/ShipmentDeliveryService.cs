@@ -60,29 +60,49 @@ namespace ShipmentDeliveryAPI.Services
                 // Add items based on delivery type
                 if (request.DeliveryType == DeliveryType.Container && request.ContainerItems != null)
                 {
-                    var containerItems = request.ContainerItems.Select(item => new ContainerItem
-                    {
-                        MaterialNumber = item.MaterialNumber,
-                        SerialNumber = item.SerialNumber,
-                        ConnectionLabel = item.ConnectionLabel,
-                        DeliveryId = delivery.DeliveryId,
-                        CreatedAt = DateTime.UtcNow
-                    }).ToList();
+                    // Deduplicate container items within the same request based on MaterialNumber and SerialNumber
+                    var uniqueContainerItems = request.ContainerItems
+                        .GroupBy(item => new { item.MaterialNumber, item.SerialNumber })
+                        .Select(group => group.First()) // Take the first occurrence, ignore duplicates
+                        .Select(item => new ContainerItem
+                        {
+                            MaterialNumber = item.MaterialNumber,
+                            SerialNumber = item.SerialNumber,
+                            ConnectionLabel = item.ConnectionLabel,
+                            DeliveryId = delivery.DeliveryId,
+                            CreatedAt = DateTime.UtcNow
+                        }).ToList();
 
-                    await _unitOfWork.ContainerItems.AddRangeAsync(containerItems);
+                    if (uniqueContainerItems.Count < request.ContainerItems.Count)
+                    {
+                        _logger.LogInformation("Deduplicated {OriginalCount} container items to {UniqueCount} unique items for delivery {DeliveryNumber}",
+                            request.ContainerItems.Count, uniqueContainerItems.Count, request.DeliveryNumber);
+                    }
+
+                    await _unitOfWork.ContainerItems.AddRangeAsync(uniqueContainerItems);
                 }
                 else if (request.DeliveryType == DeliveryType.Bulk && request.BulkItems != null)
                 {
-                    var bulkItems = request.BulkItems.Select(item => new BulkItem
-                    {
-                        MaterialNumber = item.MaterialNumber,
-                        EvdSealNumber = item.EvdSealNumber,
-                        ConnectionLabel = item.ConnectionLabel,
-                        DeliveryId = delivery.DeliveryId,
-                        CreatedAt = DateTime.UtcNow
-                    }).ToList();
+                    // Deduplicate bulk items within the same request based on MaterialNumber and EvdSealNumber
+                    var uniqueBulkItems = request.BulkItems
+                        .GroupBy(item => new { item.MaterialNumber, item.EvdSealNumber })
+                        .Select(group => group.First()) // Take the first occurrence, ignore duplicates
+                        .Select(item => new BulkItem
+                        {
+                            MaterialNumber = item.MaterialNumber,
+                            EvdSealNumber = item.EvdSealNumber,
+                            ConnectionLabel = item.ConnectionLabel,
+                            DeliveryId = delivery.DeliveryId,
+                            CreatedAt = DateTime.UtcNow
+                        }).ToList();
 
-                    await _unitOfWork.BulkItems.AddRangeAsync(bulkItems);
+                    if (uniqueBulkItems.Count < request.BulkItems.Count)
+                    {
+                        _logger.LogInformation("Deduplicated {OriginalCount} bulk items to {UniqueCount} unique items for delivery {DeliveryNumber}",
+                            request.BulkItems.Count, uniqueBulkItems.Count, request.DeliveryNumber);
+                    }
+
+                    await _unitOfWork.BulkItems.AddRangeAsync(uniqueBulkItems);
                 }
 
                 await _unitOfWork.SaveChangesAsync();
